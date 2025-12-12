@@ -1,0 +1,89 @@
+<aside th:fragment="admin_sidebar(active)">
+
+    <style>
+        .admin-sidebar {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 240px;
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+
+            background: #f7faf7;
+            border-right: 1px solid #e5e7eb;
+            padding-top: 20px;
+        }
+
+        /* XÓA DẤU CHẤM (•) TRONG UL / LI */
+        .admin-sidebar ul {
+            list-style: none;     /* bỏ bullet */
+            padding-left: 0;      /* bỏ thụt lề */
+            margin: 0;            /* bỏ margin mặc định */
+        }
+
+        .admin-sidebar li {
+            list-style-type: none;   /* đảm bảo không bullet */
+        }
+
+        .sidebar-section-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #27ae60;
+            margin: 15px 20px 8px;
+            text-transform: uppercase;
+            opacity: .9;
+        }
+
+        .admin-sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            margin: 0 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 15px;
+            color: #374151;
+        }
+
+        .admin-sidebar a.active {
+            background: #27ae60;
+            color: #fff !important;
+            font-weight: 600;
+        }
+    </style>
+
+    <div class="admin-sidebar">
+
+        <div class="sidebar-section-label">CLUB MANAGEMENT</div>
+
+        <ul>
+            <li>
+                <a href="/admin"
+                   th:classappend="${active == 'dashboard'} ? 'active'">
+                    🏠 Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="/admin/sport-type"
+                   th:classappend="${active == 'sporttype'} ? 'active'">
+                    ⚽ Sport Types
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-section-label">USERS MANAGEMENT</div>
+
+        <ul>
+            <li>
+                <a href="/admin/user"
+                   th:classappend="${active == 'user'} ? 'active'">
+                    👤 Users
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+</aside>

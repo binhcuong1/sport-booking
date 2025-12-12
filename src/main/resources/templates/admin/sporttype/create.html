@@ -1,0 +1,104 @@
+<style>
+    .form-wrapper {
+        max-width: 650px;
+        margin: 40px auto;
+        background: #fff;
+        padding: 35px 40px;
+        border-radius: 18px;
+        box-shadow: 0 8px 22px rgba(0,0,0,0.07);
+        animation: fadeIn .35s ease;
+    }
+
+    .form-title {
+        text-align: center;
+        font-size: 30px;
+        font-weight: 700;
+        margin-bottom: 28px;
+        color: #1f2937;
+    }
+
+    .form-group {
+        margin-bottom: 22px;
+    }
+
+    .form-label {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-control {
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1px solid #d1d5db;
+        font-size: 16px;
+        width: 100%;
+    }
+
+    .btn-area {
+        margin-top: 18px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+    }
+
+    .btn-green {
+        background: #22c55e;
+        color: white;
+        border: none;
+        padding: 11px 26px;
+        font-size: 15px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: .25s;
+        cursor: pointer;
+    }
+    .btn-green:hover {
+        background: #16a34a;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+
+    .btn-back {
+        font-size: 15px;
+        text-decoration: none;
+        color: #6b21a8;
+        font-weight: 600;
+        padding: 11px 22px;
+        border-radius: 10px;
+        border: 1px solid #c084fc;
+        transition: .25s;
+    }
+    .btn-back:hover {
+        background: #f3e8ff;
+        transform: translateY(-2px);
+    }
+
+    @keyframes fadeIn {
+        from {opacity: 0; transform: translateY(12px);}
+        to {opacity: 1; transform: translateY(0);}
+    }
+</style>
+<div class="form-wrapper">
+
+    <h2 class="form-title">Create Sport Type</h2>
+
+    <form th:action="@{/admin/sport-type/create}" method="post">
+
+        <div class="form-group">
+            <label class="form-label">Sport Name</label>
+            <input type="text"
+                   class="form-control"
+                   name="sportName"
+                   required>
+        </div>
+
+        <div class="btn-area">
+            <a href="/admin/sport-type" class="btn-back">← Back</a>
+            <button class="btn-green">Create</button>
+        </div>
+
+    </form>
+
+</div>

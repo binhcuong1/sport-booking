@@ -1,0 +1,134 @@
+/* ==============================
+   GLOBAL
+   ============================== */
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: #f3f6fa;
+}
+
+/* ==============================
+   LAYOUT CONTENT
+   ============================== */
+.admin-content {
+    margin-left: 240px;
+    padding: 110px 40px 40px;
+
+    /* Giúp footer luôn đẩy xuống cuối trang */
+    min-height: calc(100vh - 160px);
+
+    /* Hiệu ứng mượt */
+    transition: all 0.25s ease;
+}
+
+/* ==============================
+   TITLES
+   ============================== */
+.page-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #1f2937;
+}
+
+.page-subtitle {
+    font-size: 15px;
+    color: #6b7280;
+    margin-bottom: 30px;
+}
+
+/* ==============================
+   DASHBOARD CARDS
+   ============================== */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 25px;
+}
+
+.card {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 18px;
+    border-left: 6px solid #22c55e;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    transition: 0.25s ease;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+.card .num {
+    font-size: 36px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-top: 10px;
+}
+
+/* ==============================
+   SIDEBAR FIX + BEAUTIFY
+   ============================== */
+.admin-sidebar ul {
+    list-style: none !important;
+    padding-left: 0;
+}
+
+.admin-sidebar li a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    padding: 12px 18px;
+    margin: 4px 10px;
+    border-radius: 10px;
+    color: #374151;
+    transition: 0.2s;
+}
+
+.admin-sidebar li a:hover {
+    background: #e3f7ea;
+}
+
+.admin-sidebar a.active {
+    background: #27ae60 !important;
+    color: white !important;
+    font-weight: 600;
+}
+
+/* ==============================
+   TABLE STYLE (Sport Types)
+   ============================== */
+.table-container {
+    margin-top: 20px;
+}
+
+.table thead th {
+    background: #111827;
+    color: white;
+    font-size: 15px;
+}
+
+.table td {
+    vertical-align: middle;
+    font-size: 15px;
+}
+
+/* Buttons */
+.add-btn {
+    background: #16a34a;
+    border: none;
+}
+
+.add-btn:hover {
+    background: #12833d;
+}
+
+.btn-warning {
+    font-weight: 500;
+}
+
+.btn-danger {
+    font-weight: 500;
+}
