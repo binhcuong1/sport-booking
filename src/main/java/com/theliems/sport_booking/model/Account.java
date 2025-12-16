@@ -28,6 +28,6 @@ public class Account {
     private Role role = Role.user;
 
     public enum Role {
-        user, owner
+        user, admin, owner
     }
 }
