@@ -133,5 +133,4 @@ public class ClubController {
         clubSportTypeRepo.deleteByClubIdAndSportTypeId(clubId, sportTypeId);
         return ResponseEntity.ok("Đã gỡ loại sân khỏi club");
     }
-
 }
