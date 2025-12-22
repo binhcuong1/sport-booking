@@ -2,9 +2,11 @@ package com.theliems.sport_booking.controller;
 
 import com.theliems.sport_booking.model.Club;
 import com.theliems.sport_booking.model.ClubSportType;
+import com.theliems.sport_booking.model.Court;
 import com.theliems.sport_booking.model.SportType;
 import com.theliems.sport_booking.repository.ClubRepository;
 import com.theliems.sport_booking.repository.ClubSportTypeRepository;
+import com.theliems.sport_booking.repository.CourtRepository;
 import com.theliems.sport_booking.service.ClubService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,14 +22,17 @@ public class ClubController {
     private final ClubService clubService;
     private final ClubRepository clubRepository;
     private final ClubSportTypeRepository clubSportTypeRepo;
+    private final CourtRepository courtRepo;
 
     public ClubController(
             ClubService clubService,
             ClubRepository clubRepository,
-            ClubSportTypeRepository clubSportTypeRepo) {
+            ClubSportTypeRepository clubSportTypeRepo,
+            CourtRepository courtRepo) {
         this.clubService = clubService;
         this.clubRepository = clubRepository;
         this.clubSportTypeRepo = clubSportTypeRepo;
+        this.courtRepo = courtRepo;
     }
 
     // GET ALL
@@ -132,5 +137,14 @@ public class ClubController {
 
         clubSportTypeRepo.deleteByClubIdAndSportTypeId(clubId, sportTypeId);
         return ResponseEntity.ok("Đã gỡ loại sân khỏi club");
+    }
+
+    // Load court theo club + sport type
+    @GetMapping("/{clubId}/sport-types/{sportTypeId}/courts")
+    public List<Court> getCourtsBySportType(
+            @PathVariable int clubId,
+            @PathVariable int sportTypeId
+    ) {
+        return courtRepo.findByClubAndSportType(clubId, sportTypeId);
     }
 }
