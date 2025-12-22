@@ -95,6 +95,7 @@ public class ClubController {
         return clubRepository.findSportTypesByClubId(clubId);
     }
 
+    // Thêm sport type cho club
     @PostMapping("/{clubId}/sport-types")
     public ResponseEntity<?> addSportTypeToClub(
             @PathVariable int clubId,
@@ -112,6 +113,25 @@ public class ClubController {
         clubSportTypeRepo.save(cst);
 
         return ResponseEntity.ok("Gán loại sân cho club thành công");
+    }
+
+    // Gỡ sport type khỏi club
+    @DeleteMapping("/{clubId}/sport-types/{sportTypeId}")
+    public ResponseEntity<?> removeSportTypeFromClub(
+            @PathVariable int clubId,
+            @PathVariable int sportTypeId
+    ) {
+        int courtCount =
+                clubSportTypeRepo.countCourtByClubAndSportType(clubId, sportTypeId);
+
+        if (courtCount > 0) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Không thể xóa: vẫn còn court thuộc loại sân này");
+        }
+
+        clubSportTypeRepo.deleteByClubIdAndSportTypeId(clubId, sportTypeId);
+        return ResponseEntity.ok("Đã gỡ loại sân khỏi club");
     }
 
 }

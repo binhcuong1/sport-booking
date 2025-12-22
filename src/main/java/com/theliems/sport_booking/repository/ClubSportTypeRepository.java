@@ -1,6 +1,7 @@
 package com.theliems.sport_booking.repository;
 
 import com.theliems.sport_booking.model.ClubSportType;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -17,5 +18,11 @@ public interface ClubSportTypeRepository extends JpaRepository<ClubSportType, Lo
         AND is_deleted = 0
     """, nativeQuery = true)
     int countCourtByClubAndSportType(int clubId, int sportTypeId);
+
+    @Transactional
+    void deleteByClubIdAndSportTypeId(
+            Integer clubId,
+            Integer sportTypeId
+    );
 }
 
