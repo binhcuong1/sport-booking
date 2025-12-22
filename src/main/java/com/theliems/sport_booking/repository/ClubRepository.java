@@ -19,13 +19,11 @@ public interface ClubRepository extends JpaRepository<Club, Integer> {
     boolean existsByClubNameIgnoreCase(String clubName);
 
     @Query(value = """
-            SELECT DISTINCT st.*
-            FROM court c
-            JOIN sport_type st ON c.sport_type_id = st.sport_type_id
+            SELECT st.*
+            FROM club c
+            JOIN club_sport_type cpt ON c.club_id = cpt.club_id
+            JOIN sport_type st ON st.sport_type_id = cpt.sport_type_id
             WHERE c.club_id = :clubId
-            AND c.is_deleted = 0
             """, nativeQuery = true)
     List<SportType> findSportTypesByClubId(@Param("clubId") int clubId);
-
-
 }
