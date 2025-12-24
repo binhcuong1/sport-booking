@@ -3,7 +3,9 @@ package com.theliems.sport_booking.config;
 import com.theliems.sport_booking.config.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -34,39 +36,27 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                //  BẮT BUỘC PHẢI CÓ – FIX FAILED TO FETCH
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-
-                //  API → tắt CSRF
                 .csrf(csrf -> csrf.disable())
-
-                //  Không dùng session
-                .sessionManagement(sm ->
-                        sm.sessionCreationPolicy(
-                                org.springframework.security.config.http.SessionCreationPolicy.STATELESS
-                        )
-                )
-
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+                        // Cho phép preflight CORS
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        // chỉ mở login / google / register
+                        // Chỉ mở login / google / register
                         .requestMatchers("/api/auth/login", "/api/auth/google", "/api/auth/register").permitAll()
 
-                        // đổi mk phải có JWT
+                        // Đổi mk phải có JWT
                         .requestMatchers("/api/auth/change-password").authenticated()
 
-                        // còn lại /api/** cần JWT
+                        // Còn lại /api/** cần JWT
                         .requestMatchers("/api/**").authenticated()
 
+                        // File tĩnh / html
                         .anyRequest().permitAll()
                 )
-
                 // JWT filter
-                .addFilterBefore(
-                        jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                );
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -87,14 +77,10 @@ public class SecurityConfig {
         ));
 
         config.setAllowedHeaders(List.of("*"));
-
         config.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
-
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
     }
 }
-
