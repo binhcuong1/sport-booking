@@ -13,10 +13,13 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/court-schedules")
-@RequiredArgsConstructor
 public class CourtScheduleController {
 
     private final CourtScheduleService service;
+
+    public CourtScheduleController(CourtScheduleService service) {
+        this.service = service;
+    }
 
     // GET /admin/court-schedules?clubId=1&sportTypeId=2&date=2025-12-20
     @GetMapping

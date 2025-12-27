@@ -7,6 +7,8 @@ import com.theliems.sport_booking.model.ScheduleSlot;
 import com.theliems.sport_booking.repository.ClubRepository;
 import com.theliems.sport_booking.repository.CourtRepository;
 import com.theliems.sport_booking.repository.ScheduleSlotRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

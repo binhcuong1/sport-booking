@@ -1,6 +1,7 @@
 package com.theliems.sport_booking.repository;
 
 import com.theliems.sport_booking.model.ScheduleSlot;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
