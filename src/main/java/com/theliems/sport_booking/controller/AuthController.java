@@ -6,9 +6,11 @@ import com.theliems.sport_booking.repository.ClubRepository;
 import com.theliems.sport_booking.repository.AccountClubRepository;
 import com.theliems.sport_booking.service.AuthService;
 import com.theliems.sport_booking.service.JwtService;
+import com.theliems.sport_booking.service.AccountService;
 import com.theliems.sport_booking.model.AccountClub;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 import java.util.Map;
@@ -19,14 +21,20 @@ public class AuthController {
 
     private final AuthService authService;
     private final JwtService jwtService;
+    private final AccountService accountService;
     private final AccountClubRepository accountClubRepo;
     private final ClubRepository clubRepo;
 
-    public AuthController(AuthService authService, JwtService jwtService,
-                          AccountClubRepository accountClubRepo,
-                          ClubRepository clubRepo) {
+    public AuthController(
+            AuthService authService,
+            JwtService jwtService,
+            AccountService accountService,
+            AccountClubRepository accountClubRepo,
+            ClubRepository clubRepo
+    ) {
         this.authService = authService;
         this.jwtService = jwtService;
+        this.accountService = accountService;
         this.accountClubRepo = accountClubRepo;
         this.clubRepo = clubRepo;
     }
@@ -34,24 +42,18 @@ public class AuthController {
     // register
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Map<String, String> body) {
-
         String email = body.get("email");
         String password = body.get("password");
-
         authService.register(email, password);
-
         return ResponseEntity.ok("OTP đã được gửi tới email");
     }
 
     // verify OTP
     @PostMapping("/verify-otp")
     public ResponseEntity<?> verifyOtp(@RequestBody Map<String, String> body) {
-
         String email = body.get("email");
         String otp = body.get("otp");
-
         authService.verifyOtp(email, otp);
-
         return ResponseEntity.ok("Xác thực OTP thành công");
     }
 
@@ -89,9 +91,9 @@ public class AuthController {
                 "clubs", clubs
         ));
     }
+
     @PostMapping("/google")
     public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> body) {
-
         String idToken = body.get("idToken");
 
         Account account = authService.loginWithGoogle(idToken);
@@ -107,6 +109,18 @@ public class AuthController {
         ));
     }
 
+    // GET /api/auth/has-password
+    @GetMapping("/has-password")
+    public ResponseEntity<?> hasPassword(Authentication authentication) {
+        String email = authentication.getName();
+        boolean has = accountService.hasPassword(email);
+        return ResponseEntity.ok(Map.of("hasPassword", has));
+    }
 
-
+    // change password
+    @PutMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody Map<String, String> body) {
+        accountService.changePassword(body);
+        return ResponseEntity.ok(Map.of("message", "Đổi mật khẩu thành công"));
+    }
 }

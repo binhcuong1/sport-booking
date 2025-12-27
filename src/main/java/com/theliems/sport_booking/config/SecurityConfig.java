@@ -35,51 +35,28 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-//        http
-//                //  BẮT BUỘC PHẢI CÓ – FIX FAILED TO FETCH
-//                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-//
-//                //  API → tắt CSRF
-//                .csrf(csrf -> csrf.disable())
-//
-//                //  Không dùng session
-//                .sessionManagement(sm ->
-//                        sm.sessionCreationPolicy(
-//                                org.springframework.security.config.http.SessionCreationPolicy.STATELESS
-//                        )
-//                )
-//
-//                .authorizeHttpRequests(auth -> auth
-//                        //  Cho phép preflight CORS
-//                        .requestMatchers(
-//                                org.springframework.http.HttpMethod.OPTIONS, "/**"
-//                        ).permitAll()
-//
-//                        //  Auth API không cần JWT
-//                        .requestMatchers("/api/auth/**").permitAll()
-//
-//                        //  API khác cần token
-//                        .requestMatchers("/api/**").authenticated()
-//
-//                        //  File tĩnh / html
-//                        .anyRequest().permitAll()
-//                )
-//
-//                // JWT filter
-//                .addFilterBefore(
-//                        jwtAuthenticationFilter,
-//                        UsernamePasswordAuthenticationFilter.class
-//                );
-
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()   //  CHO PHÉP TẤT CẢ
-                );
+                        // Cho phép preflight CORS
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
+                        // Chỉ mở login / google / register
+                        .requestMatchers("/api/auth/login", "/api/auth/google", "/api/auth/register").permitAll()
 
+                        // Đổi mk phải có JWT
+                        .requestMatchers("/api/auth/change-password").authenticated()
 
+                        // Còn lại /api/** cần JWT
+                        .requestMatchers("/api/**").authenticated()
+
+                        // File tĩnh / html
+                        .anyRequest().permitAll()
+                )
+                // JWT filter
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -100,14 +77,10 @@ public class SecurityConfig {
         ));
 
         config.setAllowedHeaders(List.of("*"));
-
         config.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
-
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
     }
 }
-
