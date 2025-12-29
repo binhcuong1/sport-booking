@@ -43,19 +43,20 @@ public class SecurityConfig {
                         // Cho phép preflight CORS
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        // Chỉ mở login / google / register
+                        // Các API Auth public
                         .requestMatchers("/api/auth/login", "/api/auth/google", "/api/auth/register").permitAll()
 
-                        // Đổi mk phải có JWT
+                        //  Cho phép TẤT CẢ các request GET trong /api/ không cần đăng nhập
+                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+
+                        // Các API cần bảo mật riêng
                         .requestMatchers("/api/auth/change-password").authenticated()
 
-                        // Còn lại /api/** cần JWT
-                        .requestMatchers("/api/**").authenticated()
+                        //  Các request còn lại vào /api/** (POST, PUT, DELETE...) bắt buộc có JWT
 
-                        // File tĩnh / html
+                        .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 )
-                // JWT filter
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
