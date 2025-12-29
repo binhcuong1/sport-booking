@@ -32,7 +32,7 @@ public class ClubController {
         return clubService.getAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id:\\d+}")
     public ResponseEntity<?> getClubById(@PathVariable int id) {
         Club club = clubService.getById(id);
         if (club == null || Boolean.TRUE.equals(club.getIsDeleted())) {
