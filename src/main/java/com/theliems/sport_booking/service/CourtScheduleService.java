@@ -27,23 +27,44 @@ public class CourtScheduleService {
 
     // 1) Build daily schedule response
     public Map<String, Object> buildDailySchedule(Integer clubId, Integer sportTypeId, LocalDate date) {
+
         List<Court> courts = courtRepo.findByClubAndSportType(clubId, sportTypeId);
+
+        boolean hasAnySlot = courts.stream()
+                .anyMatch(court ->
+                        !slotRepo.findByCourtIdAndDateOrderByStartTime(
+                                court.getCourtId(), date
+                        ).isEmpty()
+                );
+
+        if (!hasAnySlot) {
+            Map<String, Object> out = new HashMap<>();
+            out.put("generated", false);
+            out.put("courts", Collections.emptyList());
+            return out;
+        }
+
+// ĐÃ GENERATE → build response
         Map<String, Object> out = new HashMap<>();
+        out.put("generated", true);          
         out.put("date", date.toString());
 
         List<Map<String, Object>> courtsOut = new ArrayList<>();
         for (Court court : courts) {
+            List<ScheduleSlot> slots =
+                    slotRepo.findByCourtIdAndDateOrderByStartTime(court.getCourtId(), date);
+
+            if (slots.isEmpty()) continue;
+
             Map<String, Object> c = new HashMap<>();
             c.put("courtId", court.getCourtId());
             c.put("courtName", court.getCourtName());
 
-            List<ScheduleSlot> slots = slotRepo.findByCourtIdAndDateOrderByStartTime(court.getCourtId(), date);
             List<Map<String, Object>> sOut = slots.stream().map(sl -> {
                 Map<String, Object> m = new HashMap<>();
                 m.put("startTime", sl.getStartTime().toString());
                 m.put("endTime", sl.getEndTime().toString());
-                // map DB status -> FE label (you can keep same words)
-                m.put("status", sl.getStatus()); // "available" | "booked" | "blocked"
+                m.put("status", sl.getStatus());
                 m.put("price", sl.getPrice());
                 return m;
             }).collect(Collectors.toList());
@@ -55,6 +76,7 @@ public class CourtScheduleService {
         out.put("courts", courtsOut);
         return out;
     }
+
 
     // 2) Update single slot (create if not exist)
     public boolean updateSingleSlot(Integer clubId, Integer courtId, LocalDate date,
