@@ -81,4 +81,15 @@ public class CourtController {
 
         return ResponseEntity.ok("Đã xóa court");
     }
+
+    @GetMapping
+    public ResponseEntity<?> getCourts(
+            @RequestParam int clubId,
+            @RequestParam int sportTypeId
+    ) {
+        return ResponseEntity.ok(
+                courtRepo.findByClubAndSportType(clubId, sportTypeId)
+        );
+    }
+
 }
