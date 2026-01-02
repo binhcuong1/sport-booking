@@ -10,8 +10,6 @@ public class Favorite {
     @EmbeddedId
     private FavoriteId id;
 
-    // Nếu m có entity Club/Profile rồi thì bật mapping này.
-    // Nếu sợ vòng lặp JSON thì để @JsonIgnore.
     @JsonIgnore
     @MapsId("clubId")
     @ManyToOne(fetch = FetchType.LAZY)
