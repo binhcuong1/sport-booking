@@ -1,7 +1,8 @@
 package com.theliems.sport_booking.controller;
 
-import com.theliems.sport_booking.model.Favorite;
+import com.theliems.sport_booking.model.Club;
 import com.theliems.sport_booking.service.FavoriteService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,42 +10,49 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/favorites")
+@RequestMapping("/api/profiles/{profileId}/favorites")
 public class FavoriteController {
 
-    private final FavoriteService favoriteService;
+    private final FavoriteService service;
 
-    public FavoriteController(FavoriteService favoriteService) {
-        this.favoriteService = favoriteService;
+    public FavoriteController(FavoriteService service) {
+        this.service = service;
     }
 
-    // GET /api/favorites/{profileId}
-    @GetMapping("/{profileId}")
-    public List<Favorite> getByProfile(@PathVariable Integer profileId) {
-        return favoriteService.getFavoritesByProfile(profileId);
+    // GET clubs detail
+    @GetMapping
+    public List<Club> getFavoriteClubs(@PathVariable Integer profileId) {
+        return service.getFavoriteClubs(profileId);
     }
 
-    // POST /api/favorites?clubId=1&profileId=2
-    @PostMapping
-    public ResponseEntity<?> add(@RequestParam Integer clubId,
-                                 @RequestParam Integer profileId) {
-        favoriteService.addFavorite(clubId, profileId);
-        return ResponseEntity.ok(Map.of("message", "Đã thêm yêu thích"));
+    // GET ids
+    @GetMapping("/ids")
+    public List<Integer> getFavoriteClubIds(@PathVariable Integer profileId) {
+        return service.getFavoriteClubIds(profileId);
     }
 
-    // DELETE /api/favorites?clubId=1&profileId=2
-    @DeleteMapping
-    public ResponseEntity<?> remove(@RequestParam Integer clubId,
-                                    @RequestParam Integer profileId) {
-        favoriteService.removeFavorite(clubId, profileId);
-        return ResponseEntity.ok(Map.of("message", "Đã xóa yêu thích"));
+    // POST /api/profiles/{profileId}/favorites/{clubId}
+    @PostMapping("/{clubId}")
+    public ResponseEntity<Void> add(@PathVariable Integer profileId,
+                                    @PathVariable Integer clubId) {
+        boolean created = service.add(profileId, clubId);
+        return created ? ResponseEntity.status(HttpStatus.CREATED).build()
+                : ResponseEntity.noContent().build();
     }
 
-    // GET /api/favorites/exists?clubId=1&profileId=2
-    @GetMapping("/exists")
-    public ResponseEntity<?> exists(@RequestParam Integer clubId,
-                                    @RequestParam Integer profileId) {
-        boolean ok = favoriteService.isFavorite(clubId, profileId);
-        return ResponseEntity.ok(Map.of("favorite", ok));
+    // DELETE /api/profiles/{profileId}/favorites/{clubId}
+    @DeleteMapping("/{clubId}")
+    public ResponseEntity<Void> remove(@PathVariable Integer profileId,
+                                       @PathVariable Integer clubId) {
+        service.remove(profileId, clubId);
+        return ResponseEntity.noContent().build();
+    }
+
+    // POST /toggle -> trả JSON để FE set icon
+    @PostMapping("/{clubId}/toggle")
+    public Map<String, Object> toggle(@PathVariable Integer profileId,
+                                      @PathVariable Integer clubId) {
+        boolean isFav = service.toggle(profileId, clubId);
+        return Map.of("favorite", isFav);
     }
 }
