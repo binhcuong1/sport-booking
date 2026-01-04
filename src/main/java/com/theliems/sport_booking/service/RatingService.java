@@ -1,5 +1,6 @@
 package com.theliems.sport_booking.service;
 
+import com.theliems.sport_booking.model.BookingStatus;
 import com.theliems.sport_booking.model.Club;
 import com.theliems.sport_booking.model.Profile;
 import com.theliems.sport_booking.model.Rating;
@@ -33,10 +34,15 @@ public class RatingService {
     }
 
     public Rating addRating(Integer clubId, Integer profileId, Integer score, String review) {
-        if (!bookingRepo.hasCompletedBooking(profileId, clubId)) {
-            throw new RuntimeException("Bạn phải đặt sân và hoàn thành tại CLB này mới được đánh giá");
+        if (!bookingRepo.hasCompletedBooking(
+                profileId,
+                clubId,
+                BookingStatus.HOAN_THANH
+        )) {
+            throw new RuntimeException(
+                    "Bạn phải đặt sân và hoàn thành tại CLB này mới được đánh giá"
+            );
         }
-
 
         if (score == null || score < 1 || score > 5) {
             throw new RuntimeException("Điểm đánh giá phải từ 1 đến 5");
