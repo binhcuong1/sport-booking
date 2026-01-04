@@ -17,13 +17,14 @@ public class Rating {
     private Integer rating_id;
 
     @ManyToOne
-    @JoinColumn(name = "club_id")
+    @JoinColumn(name = "club_id", nullable = false)
     private Club club;
 
     @ManyToOne
-    @JoinColumn(name = "profile_id")
+    @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
 
+    @Column(nullable = false)
     private Integer score;
 
     @Column(columnDefinition = "TEXT")

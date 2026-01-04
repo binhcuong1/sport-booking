@@ -1,6 +1,5 @@
 package com.theliems.sport_booking.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 import java.io.Serializable;
@@ -9,10 +8,7 @@ import java.util.Objects;
 @Embeddable
 public class FavoriteId implements Serializable {
 
-    @Column(name = "club_id")
     private Integer clubId;
-
-    @Column(name = "profile_id")
     private Integer profileId;
 
     public FavoriteId() {}
@@ -41,10 +37,9 @@ public class FavoriteId implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof FavoriteId)) return false;
-        FavoriteId that = (FavoriteId) o;
-        return Objects.equals(clubId, that.clubId) &&
-                Objects.equals(profileId, that.profileId);
+        if (!(o instanceof FavoriteId that)) return false;
+        return Objects.equals(clubId, that.clubId)
+                && Objects.equals(profileId, that.profileId);
     }
 
     @Override
