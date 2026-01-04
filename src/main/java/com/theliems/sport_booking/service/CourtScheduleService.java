@@ -62,6 +62,7 @@ public class CourtScheduleService {
 
             List<Map<String, Object>> sOut = slots.stream().map(sl -> {
                 Map<String, Object> m = new HashMap<>();
+                m.put("courtScheduleId", sl.getCourtScheduleId());
                 m.put("startTime", sl.getStartTime().toString());
                 m.put("endTime", sl.getEndTime().toString());
                 m.put("status", sl.getStatus());
