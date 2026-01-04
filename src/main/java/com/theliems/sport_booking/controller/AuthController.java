@@ -2,8 +2,10 @@ package com.theliems.sport_booking.controller;
 
 import com.theliems.sport_booking.model.Account;
 import com.theliems.sport_booking.model.Club;
+import com.theliems.sport_booking.model.Profile;
 import com.theliems.sport_booking.repository.ClubRepository;
 import com.theliems.sport_booking.repository.AccountClubRepository;
+import com.theliems.sport_booking.repository.ProfileRepository;
 import com.theliems.sport_booking.service.AuthService;
 import com.theliems.sport_booking.service.JwtService;
 import com.theliems.sport_booking.service.AccountService;
@@ -12,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,19 +27,21 @@ public class AuthController {
     private final AccountService accountService;
     private final AccountClubRepository accountClubRepo;
     private final ClubRepository clubRepo;
+    private final ProfileRepository profileRepo;
 
     public AuthController(
             AuthService authService,
             JwtService jwtService,
             AccountService accountService,
             AccountClubRepository accountClubRepo,
-            ClubRepository clubRepo
+            ClubRepository clubRepo, ProfileRepository profileRepo
     ) {
         this.authService = authService;
         this.jwtService = jwtService;
         this.accountService = accountService;
         this.accountClubRepo = accountClubRepo;
         this.clubRepo = clubRepo;
+        this.profileRepo = profileRepo;
     }
 
     // register
@@ -65,6 +70,9 @@ public class AuthController {
 
         Account account = authService.login(email, password);
         String token = jwtService.generateToken(account);
+        Profile profile = profileRepo
+                .findByAccount_AccountId(account.getAccountId())
+                .orElse(null);
 
         List<Integer> clubIds = accountClubRepo
                 .findByAccountIdAndIsDeletedFalse(account.getAccountId())
@@ -81,15 +89,23 @@ public class AuthController {
                 ))
                 .toList();
 
-        return ResponseEntity.ok(Map.of(
-                "token", token,
-                "account", Map.of(
-                        "id", account.getAccountId(),
-                        "email", account.getEmail(),
-                        "role", account.getRole()
-                ),
-                "clubs", clubs
-        ));
+        Map<String, Object> accountMap = new HashMap<>();
+        accountMap.put("id", account.getAccountId());
+        accountMap.put("email", account.getEmail());
+        accountMap.put("role", account.getRole());
+
+        if (profile != null) {
+            accountMap.put("profileId", profile.getProfile_id());
+            accountMap.put("fullName", profile.getFullname());
+        }
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("token", token);
+        res.put("account", accountMap);
+        res.put("clubs", clubs);
+
+        return ResponseEntity.ok(res);
+
     }
 
     @PostMapping("/google")
